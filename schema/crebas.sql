@@ -54,11 +54,11 @@ CREATE TYPE ESTADO_QUARTO AS ENUM ('livre', 'ocupado', 'manutencao');
 /* Table: AUDITORIAS                                            */
 /*==============================================================*/
 create table AUDITORIAS (
-   ID_AUDITORIAS        INT4                 not null,
-   ID_UTILIZADORES      INT4                 not null,
-   TIMES_TAMP           DATE                 not null,
-   DETALHES_ACAO        TEXT                 not null,
-   constraint PK_AUDITORIAS primary key (ID_AUDITORIAS)
+    ID_AUDITORIAS        INT4                 ,
+    ID_UTILIZADORES      INT4                 ,
+    TIMES_TAMP           DATE                 ,
+    DETALHES_ACAO        TEXT                 ,
+    constraint PK_AUDITORIAS primary key (ID_AUDITORIAS)
 );
 
 /*==============================================================*/
@@ -79,13 +79,13 @@ ID_UTILIZADORES
 /* Table: PAGAMENTOS                                            */
 /*==============================================================*/
 create table PAGAMENTOS (
-   ID_PAGAMENTOS        INT4                 not null,
-   ID_RESERVAS          INT4                 not null,
-   VALOR_PAGO           DECIMAL              not null,
-   METODO               VARCHAR(50)          not null,
-   DATA_PAGAMENTO       DATE                 not null,
-   ESTADO_PAGAMENTO     ESTADO_PAGAMENTO          not null,
-   constraint PK_PAGAMENTOS primary key (ID_PAGAMENTOS)
+    ID_PAGAMENTOS        INT4                 ,
+    ID_RESERVAS          INT4                 ,
+    VALOR_PAGO           DECIMAL              ,
+    METODO               VARCHAR(50)          ,
+    DATA_PAGAMENTO       DATE                 ,
+    ESTADO_PAGAMENTO     ESTADO_PAGAMENTO          ,
+    constraint PK_PAGAMENTOS primary key (ID_PAGAMENTOS)
 );
 
 /*==============================================================*/
@@ -106,14 +106,14 @@ ID_RESERVAS
 /* Table: QUARTOS                                               */
 /*==============================================================*/
 create table QUARTOS (
-   ID_QUARTOS           INT4                 not null,
-   NUMERO               INT4                 not null,
-   TIPO_QUARTO          VARCHAR(20)          not null,
-   DESCRICAO            TEXT                 not null,
-   PRECO                DECIMAL              not null,
-   IMAGEM               CHAR(254)            not null,
-   ESTADO_QUARTO        ESTADO_QUARTO          not null,
-   constraint PK_QUARTOS primary key (ID_QUARTOS)
+    ID_QUARTOS           INT4                 ,
+    NUMERO               INT4                 ,
+    TIPO_QUARTO          VARCHAR(20)          ,
+    DESCRICAO            TEXT                 ,
+    PRECO                DECIMAL              ,
+    IMAGEM               CHAR(254)            ,
+    ESTADO_QUARTO        ESTADO_QUARTO          ,
+    constraint PK_QUARTOS primary key (ID_QUARTOS)
 );
 
 /*==============================================================*/
@@ -127,10 +127,10 @@ ID_QUARTOS
 /* Table: QUARTO_IMAGEM                                         */
 /*==============================================================*/
 create table QUARTO_IMAGEM (
-   ID_IMAGEM            INT4                 not null,
-   ID_QUARTOS           INT4                 not null,
-   IMAGE                CHAR(254)            not null,
-   constraint PK_QUARTO_IMAGEM primary key (ID_IMAGEM)
+    ID_IMAGEM            INT4                 ,
+    ID_QUARTOS           INT4                 ,
+    IMAGE                CHAR(254)            ,
+    constraint PK_QUARTO_IMAGEM primary key (ID_IMAGEM)
 );
 
 /*==============================================================*/
@@ -151,16 +151,16 @@ ID_QUARTOS
 /* Table: RESERVAS                                              */
 /*==============================================================*/
 create table RESERVAS (
-   ID_RESERVAS          INT4                 not null,
-   ID_UTILIZADORES      INT4                 not null,
-   ID_QUARTOS           INT4                 not null,
-   ID_PAGAMENTOS        INT4                 not null,
-   DATA_CHECKIN         DATE                 not null,
-   DATA_CHECKOUT        DATE                 not null,
-   ESTADO_RESERVA       ESTADO_RESERVA          not null,
-   VALOR_TOTAL          DECIMAL              not null,
-   DATA_CRIACAO         DATE                 not null,
-   constraint PK_RESERVAS primary key (ID_RESERVAS)
+    ID_RESERVAS          INT4                 ,
+    ID_UTILIZADORES      INT4                 ,
+    ID_QUARTOS           INT4                 ,
+    ID_PAGAMENTOS        INT4                 ,
+    DATA_CHECKIN         DATE                 ,
+    DATA_CHECKOUT        DATE                 ,
+    ESTADO_RESERVA       ESTADO_RESERVA          ,
+    VALOR_TOTAL          DECIMAL              ,
+    DATA_CRIACAO         DATE                 ,
+    constraint PK_RESERVAS primary key (ID_RESERVAS)
 );
 
 /*==============================================================*/
@@ -195,13 +195,13 @@ ID_PAGAMENTOS
 /* Table: UTILIZADORES                                          */
 /*==============================================================*/
 create table UTILIZADORES (
-   ID_UTILIZADORES      INT4                 not null,
-   NOME                 VARCHAR(30)          not null,
-   EMAIL                VARCHAR(256)         not null,
-   PASSWORD             TEXT                 not null,
-   TIPO_UTILIZADOR      TIPO_UTILIZADOR          not null,
-   DATA_REGISTO         DATE                 not null,
-   constraint PK_UTILIZADORES primary key (ID_UTILIZADORES)
+    ID_UTILIZADORES      INT4                 ,
+    NOME                 VARCHAR(30)          ,
+    EMAIL                VARCHAR(256)         ,
+    PASSWORD             TEXT                 ,
+    TIPO_UTILIZADOR      TIPO_UTILIZADOR          ,
+    DATA_REGISTO         DATE                 ,
+    constraint PK_UTILIZADORES primary key (ID_UTILIZADORES)
 );
 
 /*==============================================================*/
@@ -212,32 +212,31 @@ ID_UTILIZADORES
 );
 
 alter table AUDITORIAS
-   add constraint FK_AUDITORI_UTILIZADO_UTILIZAD foreign key (ID_UTILIZADORES)
-      references UTILIZADORES (ID_UTILIZADORES)
-      on delete restrict on update restrict;
+    add constraint FK_AUDITORI_UTILIZADO_UTILIZAD foreign key (ID_UTILIZADORES)
+        references UTILIZADORES (ID_UTILIZADORES)
+        on delete restrict on update restrict;
 
 alter table PAGAMENTOS
-   add constraint FK_PAGAMENT_RESERVAS__RESERVAS foreign key (ID_RESERVAS)
-      references RESERVAS (ID_RESERVAS)
-      on delete restrict on update restrict;
+    add constraint FK_PAGAMENT_RESERVAS__RESERVAS foreign key (ID_RESERVAS)
+        references RESERVAS (ID_RESERVAS)
+        on delete restrict on update restrict;
 
 alter table QUARTO_IMAGEM
-   add constraint FK_QUARTO_I_QUARTOS_Q_QUARTOS foreign key (ID_QUARTOS)
-      references QUARTOS (ID_QUARTOS)
-      on delete restrict on update restrict;
+    add constraint FK_QUARTO_I_QUARTOS_Q_QUARTOS foreign key (ID_QUARTOS)
+        references QUARTOS (ID_QUARTOS)
+        on delete restrict on update restrict;
 
 alter table RESERVAS
-   add constraint FK_RESERVAS_RESERVAS__PAGAMENT foreign key (ID_PAGAMENTOS)
-      references PAGAMENTOS (ID_PAGAMENTOS)
-      on delete restrict on update restrict;
+    add constraint FK_RESERVAS_RESERVAS__PAGAMENT foreign key (ID_PAGAMENTOS)
+        references PAGAMENTOS (ID_PAGAMENTOS)
+        on delete restrict on update restrict;
 
 alter table RESERVAS
-   add constraint FK_RESERVAS_RESERVAS__QUARTOS foreign key (ID_QUARTOS)
-      references QUARTOS (ID_QUARTOS)
-      on delete restrict on update restrict;
+    add constraint FK_RESERVAS_RESERVAS__QUARTOS foreign key (ID_QUARTOS)
+        references QUARTOS (ID_QUARTOS)
+        on delete restrict on update restrict;
 
 alter table RESERVAS
-   add constraint FK_RESERVAS_UTILIZADO_UTILIZAD foreign key (ID_UTILIZADORES)
-      references UTILIZADORES (ID_UTILIZADORES)
-      on delete restrict on update restrict;
-
+    add constraint FK_RESERVAS_UTILIZADO_UTILIZAD foreign key (ID_UTILIZADORES)
+        references UTILIZADORES (ID_UTILIZADORES)
+        on delete restrict on update restrict;
