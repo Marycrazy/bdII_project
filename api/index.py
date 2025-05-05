@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify
-import psycopg
-
+import psycopg, os
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 
 # Conexão à BD
 def get_connection():
-    return psycopg.connect('CONNECTION_STRING')
+    return psycopg.connect(os.getenv("CONNECTION_STRING"))
 
 
 @app.route('/auth/register', methods=['POST'])
@@ -38,5 +39,3 @@ def register():
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
 
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
