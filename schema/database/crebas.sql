@@ -49,7 +49,7 @@ CREATE TYPE TIPO_UTILIZADOR AS ENUM ('cliente', 'recepcionista', 'administrador'
 CREATE TYPE ESTADO_RESERVA AS ENUM ('pendente', 'confirmada', 'cancelada');
 CREATE TYPE ESTADO_PAGAMENTO AS ENUM ('pendente', 'pago', 'cancelado');
 CREATE TYPE ESTADO_QUARTO AS ENUM ('livre', 'ocupado', 'manutencao');
-
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 /*==============================================================*/
 /* Table: AUDITORIAS                                            */
 /*==============================================================*/
@@ -195,7 +195,7 @@ ID_PAGAMENTOS
 /* Table: UTILIZADORES                                          */
 /*==============================================================*/
 create table UTILIZADORES (
-    ID_UTILIZADORES      INT4                 ,
+    ID_UTILIZADORES      Serial               ,
     NOME                 VARCHAR(30)          ,
     EMAIL                VARCHAR(256)         ,
     PASSWORD             TEXT                 ,

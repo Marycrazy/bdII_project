@@ -5,12 +5,8 @@ app = Flask(__name__)
 
 # Conexão à BD
 def get_connection():
-    return psycopg.connect(
-        host="localhost",
-        database="BDII proj",
-        user="postgres",
-        password="123456789"
-    )
+    return psycopg.connect('CONNECTION_STRING')
+
 
 @app.route('/auth/register', methods=['POST'])
 def register():
@@ -41,3 +37,6 @@ def register():
     except psycopg.Error as e:
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=True)
