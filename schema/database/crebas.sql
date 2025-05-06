@@ -79,7 +79,7 @@ ID_UTILIZADORES
 /* Table: PAGAMENTOS                                            */
 /*==============================================================*/
 create table PAGAMENTOS (
-    ID_PAGAMENTOS        INT4                 ,
+    ID_PAGAMENTOS        Serial                 ,
     ID_RESERVAS          INT4                 ,
     VALOR_PAGO           DECIMAL              ,
     METODO               VARCHAR(50)          ,
@@ -151,7 +151,7 @@ ID_QUARTOS
 /* Table: RESERVAS                                              */
 /*==============================================================*/
 create table RESERVAS (
-    ID_RESERVAS          INT4                 ,
+    ID_RESERVAS          Serial                 ,
     ID_UTILIZADORES      INT4                 ,
     ID_QUARTOS           INT4                 ,
     ID_PAGAMENTOS        INT4                 ,
