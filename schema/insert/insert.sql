@@ -3,6 +3,7 @@ values
     (1, 123, 'afdg', 'dasfg', 999, 'dafsgdh', 'livre'),
     (2, 321, 'asfafew', 'qerfwe', 998, 'asfgfdh', 'ocupado');
 
+--@block
 insert into utilizadores (id_utilizadores, nome, email, password, tipo_utilizador, data_registo)
 values
     (1, 'asdfdg', 'ADSFD', '1234', 'cliente', '2020-01-01');
@@ -14,3 +15,4 @@ values
 insert into pagamentos (id_pagamentos, id_reservas, valor_pago, metodo, data_pagamento, estado_pagamento)
 values
     (1, 1, 998, 'efew', '2020-01-01', 'pago');
+
