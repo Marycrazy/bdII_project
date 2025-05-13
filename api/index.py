@@ -1,41 +1,13 @@
 from flask import Flask, request, jsonify
 import psycopg, os
+from .auth import register
 
 app = Flask(__name__)
+app.register_blueprint(register)
 
 # Conexão à BD
 def get_connection():
     return psycopg.connect(os.environ.get("CONNECTION_STRING"))
-
-@app.route('/auth/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    nome = data.get("nome")
-    email = data.get("email")
-    password = data.get("password")
-    tipo = data.get("tipo_utilizador")
-
-    # Validação básica
-    if not all([nome, email, password, tipo]):
-        return jsonify({"erro": "Todos os campos são obrigatórios."}), 400
-
-
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-
-        # Chamar a função PL/pgSQL
-        cur.execute("SELECT inserir_utilizador(%s, %s, %s, %s)", (nome, email, password, tipo))
-
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return jsonify({"mensagem": "Utilizador registado com sucesso."}), 201
-
-    except psycopg.Error as e:
-        conn.rollback()
-        return jsonify({"erro": str(e)}), 400
 
 @app.route('/reserva/register', methods=['POST'])
 def register_reserva():
@@ -88,3 +60,7 @@ def get_room_availability(room_num, date):
 
     except psycopg.Error as e:
         return jsonify({"erro": str(e)}), 400
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    
