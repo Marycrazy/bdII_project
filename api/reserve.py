@@ -1,7 +1,7 @@
 import jwt
 import os
 import psycopg
-from datetime import datetime, timedelta
+from .auth import verify_token
 from flask import Flask, request, jsonify, Blueprint
 
 # Conexão à BD
@@ -11,8 +11,11 @@ def get_connection():
 reserva = Blueprint('reserva', __name__)
 @reserva.route('/reserva/register', methods=['POST'])
 def register_reserva():
+    id_utilizador, error = verify_token()
+    if error:
+        msg, status = error
+        return jsonify(message=msg), status
     data = request.get_json()
-    id_utilizador = data.get("id_utilizador")
     id_quarto = data.get("id_quarto")
     data_inicio = data.get("data_inicio")
     data_fim = data.get("data_fim")
@@ -39,3 +42,4 @@ def register_reserva():
     except psycopg.Error as e:
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
+    

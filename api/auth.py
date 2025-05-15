@@ -4,6 +4,8 @@ import psycopg
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, Blueprint
 
+secret_key =  os.getenv("SECRET_KEY", "chave-super-secreta")
+
 # Conexão à BD
 def get_connection():
     return psycopg.connect(os.environ.get("CONNECTION_STRING"))
@@ -66,7 +68,7 @@ def autebticacao():
         # Gerar token JWT
         token = jwt.encode(
             {"user": user_id, "exp": datetime.now() + timedelta(minutes=30)},
-            os.getenv("SECRET_KEY", "sua-chave-super-secreta"),
+            secret_key,
             algorithm="HS256"
         )
         cur.close()
@@ -76,3 +78,21 @@ def autebticacao():
     except psycopg.Error as e:
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
+    
+def verify_token():
+    auth_header = request.headers.get('Authorization', None)
+    if not auth_header:
+        return None, ('Token é necessário!', 403)
+
+    parts = auth_header.split()
+    if parts[0].lower() != 'bearer' or len(parts) != 2:
+        return None, ('Cabeçalho de autorização malformado!', 401)
+
+    token = parts[1]
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+        return payload['user'], None
+    except jwt.ExpiredSignatureError:
+        return None, ('Token expirado! Faça login novamente.', 401)
+    except jwt.InvalidTokenError:
+        return None, ('Token inválido!', 403)
