@@ -1,7 +1,7 @@
 from werkzeug.exceptions import RequestEntityTooLarge
 from flask import Flask, jsonify
 from .auth import register, login
-from .reserve import reserva
+from .reserve import reserva, ver_reserva, cancelar_reserva
 from .room import quarto
 from .image import image_bp
 
@@ -11,6 +11,8 @@ app.register_blueprint(register)
 app.register_blueprint(login)
 app.register_blueprint(reserva)
 app.register_blueprint(quarto)
+app.register_blueprint(ver_reserva)
+app.register_blueprint(cancelar_reserva)
 app.register_blueprint(image_bp)
 
 @app.errorhandler(RequestEntityTooLarge)
