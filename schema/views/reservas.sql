@@ -21,12 +21,12 @@ WHERE
     r.ID_UTILIZADORES = CURRENT_SETTING('app.user_id')::INTEGER;
 
 --@block
---eservas do cliente
+--reservas do cliente
 SET app.user_id = 1;
 SELECT * FROM reservas_do_cliente;
 
 --@block
-SELECT * FROM 
+SELECT * FROM
     RESERVAS r, QUARTOS q, PAGAMENTOS p
 WHERE
     r.ID_QUARTOS = q.ID_QUARTOS

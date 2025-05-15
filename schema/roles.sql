@@ -62,4 +62,5 @@ GRANT client_role TO client_dbII;
 
 -- Configure role privileges
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.RESERVAS, public.PAGAMENTOS TO receptionist_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE RESERVAS, PAGAMENTOS TO receptionist_role;
+GRANT SELECT, UPDATE ON reservas_do_cliente TO client_role;
