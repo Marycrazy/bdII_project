@@ -1,4 +1,5 @@
 import psycopg, imghdr, os
+import psycopg, imghdr, os
 from flask import Blueprint, request, Response, jsonify
 from psycopg import Binary
 
@@ -51,6 +52,7 @@ def upload_imagem():
 
 
 @image_bp.route('/quartos/<int:room_id>/imagem', methods=['GET'])
+@image_bp.route('/quartos/<int:room_id>/imagem', methods=['GET'])
 def list_room_images(room_id):
     try:
         conn = get_connection()
@@ -70,6 +72,7 @@ def list_room_images(room_id):
         conn.close()
 
 
+@image_bp.route('/quartos/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
 @image_bp.route('/quartos/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
 def get_room_image(room_id, image_id):
     try:
