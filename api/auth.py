@@ -2,7 +2,7 @@ import jwt
 import os
 import psycopg
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 
 secret_key =  os.getenv("SECRET_KEY", "chave-super-secreta")
 

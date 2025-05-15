@@ -1,8 +1,6 @@
-import jwt
 import os
 import psycopg
-from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, Blueprint
+from flask import jsonify, Blueprint
 
 # Conexão à BD
 def get_connection():
