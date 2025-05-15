@@ -12,7 +12,7 @@ def get_connection():
 
 register = Blueprint('register', __name__)
 @register.route('/auth/register', methods=['POST'])
-def registers():
+def registar():
     data = request.get_json()
     nome = data.get("nome")
     email = data.get("email")
@@ -43,7 +43,7 @@ def registers():
 
 login = Blueprint('login', __name__)
 @login.route('/auth/login', methods=['POST'])
-def autebticacao():
+def autenticacao():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
