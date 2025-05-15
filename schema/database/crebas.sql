@@ -54,7 +54,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 /* Table: AUDITORIAS                                            */
 /*==============================================================*/
 create table AUDITORIAS (
-    ID_AUDITORIAS        INT4                 ,
+    ID_AUDITORIAS        SERIAL                 ,
     ID_UTILIZADORES      INT4                 ,
     TIMES_TAMP           DATE                 ,
     DETALHES_ACAO        TEXT                 ,
@@ -65,21 +65,21 @@ create table AUDITORIAS (
 /* Index: AUDITORIAS_PK                                         */
 /*==============================================================*/
 create unique index AUDITORIAS_PK on AUDITORIAS (
-ID_AUDITORIAS
+    ID_AUDITORIAS
 );
 
 /*==============================================================*/
 /* Index: UTILIZADORES_AUDITORIAS_FK                            */
 /*==============================================================*/
 create  index UTILIZADORES_AUDITORIAS_FK on AUDITORIAS (
-ID_UTILIZADORES
+    ID_UTILIZADORES
 );
 
 /*==============================================================*/
 /* Table: PAGAMENTOS                                            */
 /*==============================================================*/
 create table PAGAMENTOS (
-    ID_PAGAMENTOS        Serial                 ,
+    ID_PAGAMENTOS        SERIAL                 ,
     ID_RESERVAS          INT4                 ,
     VALOR_PAGO           DECIMAL              ,
     METODO               VARCHAR(50)          ,
@@ -92,26 +92,25 @@ create table PAGAMENTOS (
 /* Index: PAGAMENTOS_PK                                         */
 /*==============================================================*/
 create unique index PAGAMENTOS_PK on PAGAMENTOS (
-ID_PAGAMENTOS
+    ID_PAGAMENTOS
 );
 
 /*==============================================================*/
 /* Index: RESERVAS_PAGAMENTOS2_FK                               */
 /*==============================================================*/
 create  index RESERVAS_PAGAMENTOS2_FK on PAGAMENTOS (
-ID_RESERVAS
+    ID_RESERVAS
 );
 
 /*==============================================================*/
 /* Table: QUARTOS                                               */
 /*==============================================================*/
 create table QUARTOS (
-    ID_QUARTOS           INT4                 ,
+    ID_QUARTOS           SERIAL                 ,
     NUMERO               INT4                 ,
     TIPO_QUARTO          VARCHAR(20)          ,
     DESCRICAO            TEXT                 ,
     PRECO                DECIMAL              ,
-    IMAGEM               CHAR(254)            ,
     ESTADO_QUARTO        ESTADO_QUARTO          ,
     constraint PK_QUARTOS primary key (ID_QUARTOS)
 );
@@ -120,16 +119,16 @@ create table QUARTOS (
 /* Index: QUARTOS_PK                                            */
 /*==============================================================*/
 create unique index QUARTOS_PK on QUARTOS (
-ID_QUARTOS
+    ID_QUARTOS
 );
 
 /*==============================================================*/
 /* Table: QUARTO_IMAGEM                                         */
 /*==============================================================*/
 create table QUARTO_IMAGEM (
-    ID_IMAGEM            INT4                 ,
-    ID_QUARTOS           INT4                 ,
-    IMAGE                CHAR(254)            ,
+    ID_IMAGEM            SERIAL                 ,
+    ID_QUARTOS           INT4                ,
+    IMAGE                BYTEA            ,
     constraint PK_QUARTO_IMAGEM primary key (ID_IMAGEM)
 );
 
@@ -137,21 +136,21 @@ create table QUARTO_IMAGEM (
 /* Index: QUARTO_IMAGEM_PK                                      */
 /*==============================================================*/
 create unique index QUARTO_IMAGEM_PK on QUARTO_IMAGEM (
-ID_IMAGEM
+    ID_IMAGEM
 );
 
 /*==============================================================*/
 /* Index: QUARTOS_QUARTOS_FK                                    */
 /*==============================================================*/
 create  index QUARTOS_QUARTOS_FK on QUARTO_IMAGEM (
-ID_QUARTOS
+    ID_QUARTOS
 );
 
 /*==============================================================*/
 /* Table: RESERVAS                                              */
 /*==============================================================*/
 create table RESERVAS (
-    ID_RESERVAS          Serial                 ,
+    ID_RESERVAS          SERIAL                 ,
     ID_UTILIZADORES      INT4                 ,
     ID_QUARTOS           INT4                 ,
     ID_PAGAMENTOS        INT4                 ,
@@ -167,35 +166,35 @@ create table RESERVAS (
 /* Index: RESERVAS_PK                                           */
 /*==============================================================*/
 create unique index RESERVAS_PK on RESERVAS (
-ID_RESERVAS
+    ID_RESERVAS
 );
 
 /*==============================================================*/
 /* Index: UTILIZADORES_RESERVAS_FK                              */
 /*==============================================================*/
 create  index UTILIZADORES_RESERVAS_FK on RESERVAS (
-ID_UTILIZADORES
+    ID_UTILIZADORES
 );
 
 /*==============================================================*/
 /* Index: RESERVAS_QUARTOS_FK                                   */
 /*==============================================================*/
 create  index RESERVAS_QUARTOS_FK on RESERVAS (
-ID_QUARTOS
+    ID_QUARTOS
 );
 
 /*==============================================================*/
 /* Index: RESERVAS_PAGAMENTOS_FK                                */
 /*==============================================================*/
 create  index RESERVAS_PAGAMENTOS_FK on RESERVAS (
-ID_PAGAMENTOS
+    ID_PAGAMENTOS
 );
 
 /*==============================================================*/
 /* Table: UTILIZADORES                                          */
 /*==============================================================*/
 create table UTILIZADORES (
-    ID_UTILIZADORES      Serial               ,
+    ID_UTILIZADORES      SERIAL               ,
     NOME                 VARCHAR(30)          ,
     EMAIL                VARCHAR(256)         ,
     PASSWORD             TEXT                 ,
@@ -208,7 +207,7 @@ create table UTILIZADORES (
 /* Index: UTILIZADORES_PK                                       */
 /*==============================================================*/
 create unique index UTILIZADORES_PK on UTILIZADORES (
-ID_UTILIZADORES
+    ID_UTILIZADORES
 );
 
 alter table AUDITORIAS
