@@ -43,3 +43,42 @@ def register_reserva():
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
     
+ver_reserva = Blueprint('ver_reserva', __name__)
+@ver_reserva.route('/reserva/<id>', methods=['GET'])
+def get_reserva(id):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM RESERVAS WHERE ID_RESERVAS = (%s)", (id,))
+        result = cur.fetchone()
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        if result:
+            return jsonify({"reserva": result}), 200
+        else:
+            return jsonify({"erro": "Reserva não encontrada."}), 404
+    except psycopg.Error as e:
+        if conn:
+            conn.rollback()
+        return jsonify({"erro": str(e)}), 400
+    
+cancelar_reserva = Blueprint('cancelar_reserva', __name__)
+@cancelar_reserva.route('/reserva/<id>/cancelar', methods=['PUT'])
+def cancel_reserva(id):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = (%s)", (id,))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({"mensagem": "Reserva cancelada"}), 200
+    except psycopg.Error as e:
+        if conn:
+            conn.rollback()
+        return jsonify({"erro": str(e)}), 400
