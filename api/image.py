@@ -1,4 +1,4 @@
-import logging, psycopg, imghdr, os
+import psycopg, imghdr, os
 from flask import Blueprint, request, Response, jsonify
 from psycopg import Binary
 
@@ -43,7 +43,6 @@ def upload_imagem():
         msg = str(e).split('\n')[0]
         if "Room does not exist" in msg:
             return jsonify(error="Room not found"), 404
-        logging.error(f"Upload error: {msg}")
         return jsonify(error="Database operation failed"), 500
 
     finally:
@@ -51,7 +50,7 @@ def upload_imagem():
         conn.close()
 
 
-@image_bp.route('/<int:room_id>/imagem', methods=['GET'])
+@image_bp.route('/quartos/<int:room_id>/imagem', methods=['GET'])
 def list_room_images(room_id):
     try:
         conn = get_connection()
@@ -64,15 +63,14 @@ def list_room_images(room_id):
         msg = str(e).split('\n')[0]
         if "No images found for this room" in msg:
             return jsonify(error="No images found for this room"), 404
-        logging.error(f"List error: {msg}")
-        return jsonify(error="Database operation failed"), 500
+        return jsonify(error="Database operation failed. error: {msg}"), 500
 
     finally:
         cur.close()
         conn.close()
 
 
-@image_bp.route('/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
+@image_bp.route('/quartos/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
 def get_room_image(room_id, image_id):
     try:
         conn = get_connection()
@@ -97,7 +95,6 @@ def get_room_image(room_id, image_id):
         msg = str(e).split('\n')[0]
         if "Image not found" in msg:
             return jsonify(error="Image not found"), 404
-        logging.error(f"Get error: {msg}")
         return jsonify(error="Database operation failed"), 500
 
     finally:
