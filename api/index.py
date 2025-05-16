@@ -1,7 +1,7 @@
 from werkzeug.exceptions import RequestEntityTooLarge
 from flask import Flask, jsonify
 from .auth import register, login
-from .reserve import reserva, ver_reserva, cancelar_reserva
+from .reservation import reserva, ver_reserva, cancelar_reserva
 from .room import quarto
 from .image import image_bp
 

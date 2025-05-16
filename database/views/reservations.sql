@@ -19,13 +19,3 @@ WHERE
     r.ID_RESERVAS = p.ID_RESERVAS
     AND
     r.ID_UTILIZADORES = CURRENT_SETTING('app.user_id')::INTEGER;
-
---@block
---reservas do cliente
-SET app.user_id = 1;
-SELECT * FROM reservas_do_cliente;
-
---@block
-SELECT * FROM RESERVAS WHERE ID_RESERVAS = 2;
---@block
-UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = 3;

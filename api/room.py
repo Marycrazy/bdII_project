@@ -1,10 +1,6 @@
-import os
 import psycopg
+from .connection import get_connection
 from flask import jsonify, Blueprint
-
-# Conexão à BD
-def get_connection():
-    return psycopg.connect(os.environ.get("CONNECTION_STRING"))
 
 quarto = Blueprint('quarto', __name__)
 @quarto.route('/room/<room_num>/<date>', methods=['GET'])
@@ -13,17 +9,23 @@ def get_room_availability(room_num, date):
         conn = get_connection()
         cur = conn.cursor()
 
+        cur.execute("SELECT EXISTS(SELECT 1 FROM quartos WHERE numero = %s)", (room_num,))
+        quarto_exists = cur.fetchone()[0]
+
+        if not quarto_exists:
+            return jsonify({"erro": "Quarto não encontrado."}), 404
+
         cur.execute("SELECT is_available(%s, %s)", (room_num, date))
-        result = cur.fetchone()[0]
+        disponivel = cur.fetchone()[0]
 
         conn.commit()
         cur.close()
         conn.close()
 
-        if result is True:
+        if disponivel:
             return jsonify({"disponibilidade": "Quarto disponível."}), 200
-        elif result is False:
+        else:
             return jsonify({"disponibilidade": "Quarto indisponível."}), 200
 
-    except psycopg.Error as e:
-        return jsonify({"erro": str(e)}), 400
+    except psycopg.Error:
+        return jsonify({"erro": "Não foi possível verificar a disponibilidade do quarto."}), 400
