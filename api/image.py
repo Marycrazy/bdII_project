@@ -52,7 +52,6 @@ def upload_imagem():
 
 
 @image_bp.route('/quartos/<int:room_id>/imagem', methods=['GET'])
-@image_bp.route('/quartos/<int:room_id>/imagem', methods=['GET'])
 def list_room_images(room_id):
     try:
         conn = get_connection()
@@ -73,7 +72,6 @@ def list_room_images(room_id):
 
 
 @image_bp.route('/quartos/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
-@image_bp.route('/quartos/<int:room_id>/imagem/<int:image_id>', methods=['GET'])
 def get_room_image(room_id, image_id):
     try:
         conn = get_connection()
@@ -89,8 +87,6 @@ def get_room_image(room_id, image_id):
             mimetype = 'image/png'
         elif kind in ('jpeg', 'jpg'):
             mimetype = 'image/jpeg'
-        else:
-            mimetype = 'application/octet-stream'
 
         return Response(image_data, mimetype=mimetype), 200
 

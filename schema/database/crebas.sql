@@ -56,7 +56,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 create table AUDITORIAS (
     ID_AUDITORIAS        SERIAL                 ,
     ID_UTILIZADORES      INT4                 ,
-    TIMES_TAMP           DATE                 ,
+    TIMESTAMP           TIMESTAMP                 ,
     DETALHES_ACAO        TEXT                 ,
     constraint PK_AUDITORIAS primary key (ID_AUDITORIAS)
 );
