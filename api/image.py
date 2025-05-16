@@ -1,12 +1,9 @@
-import psycopg, imghdr, os
-import psycopg, imghdr, os
+import psycopg, imghdr
+from .connection import get_connection
 from flask import Blueprint, request, Response, jsonify
 from psycopg import Binary
 
 image_bp = Blueprint('image', __name__)
-
-def get_connection():
-    return psycopg.connect(os.environ.get("CONNECTION_STRING"))
 
 ALLOWED_MIMETYPES = {'image/jpeg', 'image/png'}
 

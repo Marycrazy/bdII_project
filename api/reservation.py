@@ -1,11 +1,7 @@
-import os
 import psycopg
+from .connection import get_connection
 from .auth import verify_token, get_user_type
 from flask import request, jsonify, Blueprint
-
-# Conexão à BD
-def get_connection():
-    return psycopg.connect(os.environ.get("CONNECTION_STRING"))
 
 reserva = Blueprint('reserva', __name__)
 @reserva.route('/reservas', methods=['POST'])
@@ -14,7 +10,7 @@ def register_reserva():
     if error:
         msg, status = error
         return jsonify(message=msg), status
-    
+
     data = request.get_json()
     id_quarto = data.get("id_quarto")
     data_inicio = data.get("data_inicio")
@@ -31,9 +27,10 @@ def register_reserva():
         cur = conn.cursor()
 
         cur.execute("SELECT NUMERO FROM QUARTOS WHERE ID_QUARTOS = %s", (id_quarto,))
-        num_quarto = cur.fetchone()[0]
-        if not num_quarto:
+        quarto_result = cur.fetchone()
+        if not quarto_result:
             return jsonify({"erro": "numero do quarto não encontrado."}), 404
+        num_quarto = quarto_result[0]
 
         # Verifica a disponibilidade do quarto
         cur.execute("SELECT is_available(%s, %s)", (num_quarto, data_inicio))
@@ -55,7 +52,7 @@ def register_reserva():
     except psycopg.Error as e:
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
-    
+
 ver_reserva = Blueprint('ver_reserva', __name__)
 @ver_reserva.route('/reservas/<id>', methods=['GET'])
 def get_reserva(id):
@@ -63,14 +60,14 @@ def get_reserva(id):
     if error:
         msg, status = error
         return jsonify(message=msg), status
-    
+
     try:
         conn = get_connection()
-        cur = conn.cursor() 
+        cur = conn.cursor()
         tipo_utilizador, error = get_user_type(id_utilizador)
         if error:
             return jsonify(message=error), 404
-            
+
         # Verifica se o utilizador é um administrador ou rececionista
         if tipo_utilizador in ['administrador', 'recepcionista']:
             sql = "SELECT * FROM RESERVAS WHERE ID_RESERVAS = %s"
@@ -78,7 +75,7 @@ def get_reserva(id):
         else:
             sql = "SELECT * FROM RESERVAS WHERE ID_RESERVAS = %s AND ID_UTILIZADORES = %s"
             params = (id, id_utilizador)  # id da reserva e id do utilizador logado
-           
+
         cur.execute(sql, params)
         result = cur.fetchone()
         # Verifica se a reserva existe
@@ -94,7 +91,7 @@ def get_reserva(id):
         if conn:
             conn.rollback()
         return jsonify({"erro": str(e)}), 400
-    
+
 cancelar_reserva = Blueprint('cancelar_reserva', __name__)
 @cancelar_reserva.route('/reservas/<id>/cancelar', methods=['PUT'])
 def cancel_reserva(id):
@@ -109,7 +106,7 @@ def cancel_reserva(id):
         tipo_utilizador, error = get_user_type(id_utilizador)
         if error:
             return jsonify(message=error), 404
-            
+
         # Verifica se o utilizador é um administrador ou rececionista
         if tipo_utilizador in ['administrador', 'recepcionista']:
             sql = "UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = %s"
@@ -118,7 +115,7 @@ def cancel_reserva(id):
             sql = "UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = %s AND ID_UTILIZADORES = %s"
             params = (id, id_utilizador)  # id da reserva e id do utilizador logado
         cur.execute(sql, params)
-        
+
         # Verifica se a reserva existe
         if cur.rowcount == 0:
             return jsonify({"erro": "Reserva não encontrada ou não autorizada."}), 404

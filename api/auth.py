@@ -1,14 +1,9 @@
-import jwt
-import os
-import psycopg
+import psycopg, os, jwt
+from .connection import get_connection
 from datetime import datetime, timedelta
 from flask import request, jsonify, Blueprint
 
 secret_key =  os.getenv("SECRET_KEY", "chave-super-secreta")
-
-# Conexão à BD
-def get_connection():
-    return psycopg.connect(os.environ.get("CONNECTION_STRING"))
 
 register = Blueprint('register', __name__)
 @register.route('/auth/register', methods=['POST'])
@@ -22,7 +17,6 @@ def registar():
     # Validação básica
     if not all([nome, email, password, tipo]):
         return jsonify({"erro": "Todos os campos são obrigatórios."}), 400
-
 
     try:
         conn = get_connection()
@@ -78,7 +72,7 @@ def autenticacao():
     except psycopg.Error as e:
         conn.rollback()
         return jsonify({"erro": str(e)}), 400
-    
+
 def verify_token():
     auth_header = request.headers.get('Authorization', None)
     if not auth_header:
@@ -96,7 +90,7 @@ def verify_token():
         return None, ('Token expirado! Faça login novamente.', 401)
     except jwt.InvalidTokenError:
         return None, ('Token inválido!', 403)
-    
+
 def get_user_type(id_utilizador):
     try:
         conn = get_connection()
