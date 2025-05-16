@@ -1,6 +1,6 @@
 import os
 import psycopg
-from .auth import verify_token
+from .auth import verify_token, get_user_type
 from flask import request, jsonify, Blueprint
 
 # Conexão à BD
@@ -66,12 +66,24 @@ def get_reserva(id):
     
     try:
         conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM RESERVAS WHERE ID_RESERVAS = (%s) AND ID_UTILIZADORES = (%s)", (id, id_utilizador))
+        cur = conn.cursor() 
+        tipo_utilizador, error = get_user_type(id_utilizador)
+        if error:
+            return jsonify(message=error), 404
+            
+        # Verifica se o utilizador é um administrador ou rececionista
+        if tipo_utilizador in ['administrador', 'recepcionista']:
+            sql = "SELECT * FROM RESERVAS WHERE ID_RESERVAS = %s"
+            params = (id,)  # id aqui é o ID da reserva da rota
+        else:
+            sql = "SELECT * FROM RESERVAS WHERE ID_RESERVAS = %s AND ID_UTILIZADORES = %s"
+            params = (id, id_utilizador)  # id da reserva e id do utilizador logado
+           
+        cur.execute(sql, params)
         result = cur.fetchone()
         # Verifica se a reserva existe
         if not result:
-            return jsonify({"erro": "Reserva não encontrada."}), 404
+            return jsonify({"erro": "Reserva não encontrada."}), 404 #por algum motivo ele não entra aqui
         # Se a reserva existir, retorna os detalhes
         conn.commit()
         cur.close()
@@ -94,7 +106,19 @@ def cancel_reserva(id):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = (%s) AND ID_UTILIZADORES = (%s)", (id, id_utilizador))
+        tipo_utilizador, error = get_user_type(id_utilizador)
+        if error:
+            return jsonify(message=error), 404
+            
+        # Verifica se o utilizador é um administrador ou rececionista
+        if tipo_utilizador in ['administrador', 'recepcionista']:
+            sql = "UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = %s"
+            params = (id,)  # id aqui é o ID da reserva da rota
+        else:
+            sql = "UPDATE RESERVAS SET ESTADO_RESERVA = 'cancelada' WHERE ID_RESERVAS = %s AND ID_UTILIZADORES = %s"
+            params = (id, id_utilizador)  # id da reserva e id do utilizador logado
+        cur.execute(sql, params)
+        
         # Verifica se a reserva existe
         if cur.rowcount == 0:
             return jsonify({"erro": "Reserva não encontrada ou não autorizada."}), 404

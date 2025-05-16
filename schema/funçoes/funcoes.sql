@@ -7,6 +7,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 --@block
 --Função para autenticar utilizador
 CREATE OR REPLACE FUNCTION autenticar_utilizador (u_email VARCHAR(50), u_password VARCHAR(50))

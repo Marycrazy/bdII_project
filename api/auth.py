@@ -55,7 +55,7 @@ def autenticacao():
     try:
         conn = get_connection()
         cur = conn.cursor()
-
+        print("email", email, "password", password)
         # Chamar a função PL/pgSQL
         cur.execute("SELECT autenticar_utilizador(%s, %s)", (email, password))
         result = cur.fetchone()
@@ -96,3 +96,16 @@ def verify_token():
         return None, ('Token expirado! Faça login novamente.', 401)
     except jwt.InvalidTokenError:
         return None, ('Token inválido!', 403)
+    
+def get_user_type(id_utilizador):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT TIPO_UTILIZADOR FROM UTILIZADORES WHERE ID_UTILIZADORES = %s", (id_utilizador,))
+        user_type = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        return user_type, None
+    except psycopg.Error as e:
+        conn.rollback()
+        return None, ("Utilizador não encontrado")
